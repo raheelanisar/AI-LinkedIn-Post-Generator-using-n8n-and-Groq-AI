@@ -91,10 +91,13 @@ Add screenshots of:
 
 ### Complete Workflow
 <img width="639" height="319" alt="image" src="https://github.com/user-attachments/assets/d95b6f06-eb10-413e-b32c-98744c7c7cd8" />
+
 ### AI Agent Output
 <img width="640" height="311" alt="image" src="https://github.com/user-attachments/assets/3e07542f-18b5-41fa-a83c-bfd9b9a577dc" />
+
 ### Google Sheets Output
 <img width="640" height="311" alt="image" src="https://github.com/user-attachments/assets/f34b157f-2793-44bc-964e-671e8a664b64" />
+
 ### Gmail Output
 <img width="640" height="316" alt="image" src="https://github.com/user-attachments/assets/07d22def-bffc-4dfc-9466-db9e5febbe98" />
 ### Workflow Execution
