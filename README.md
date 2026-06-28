@@ -75,12 +75,7 @@ AI_LinkedIn_Post_Generator/
 ├── workflow.json
 ├── README.md
 ├── project_notes.docx
-└── screenshots/
-    ├── workflow.png
-    ├── ai_output.png
-    ├── google_sheet.png
-    ├── gmail.png
-    └── execution.png
+
 ```
 
 ---
