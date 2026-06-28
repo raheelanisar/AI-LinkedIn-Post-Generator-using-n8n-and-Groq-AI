@@ -1,0 +1,292 @@
+{
+  "name": "AI LinkedIn Post Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "64f1abdd-af10-46a7-8b8f-167367f89dd1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d318717f-131f-430d-b307-cfa0b1e7ec78",
+              "name": "topic",
+              "value": "Cyber Security",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        0
+      ],
+      "id": "10179871-aab6-48c2-b2f7-5ab2f7bee32c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional LinkedIn Content Writer.\n\nCreate a professional LinkedIn post on the following topic:\n\n{{$json.topic}}\n\nInstructions:\n- Create a catchy and professional title.\n- Write a LinkedIn post between 150 and 250 words.\n- Use a professional and engaging tone.\n- End the post with a question to encourage engagement.\n- Generate exactly 5 relevant hashtags.\n\nReturn ONLY valid JSON.\n\n{\n  \"title\": \"\",\n  \"post\": \"\",\n  \"hashtags\": \"\"\n}",
+        "options": {
+          "systemMessage": "YouYou are a professional LinkedIn content writer.\n\nAlways generate high-quality professional LinkedIn posts.\n\nOnly return valid JSON. are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        432,
+        0
+      ],
+      "id": "e9a9f6a9-4610-4f46-912c-e995282b17db",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "189Pkwtre40rhyb0jBWykADxCWjTk0Nr0cC8I71S0eHs",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/189Pkwtre40rhyb0jBWykADxCWjTk0Nr0cC8I71S0eHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/189Pkwtre40rhyb0jBWykADxCWjTk0Nr0cC8I71S0eHs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{$json.title}}",
+            "      Post": "={{$json.post}}",
+            "   Hashtags": "={{$json.hashtags}}",
+            "Date": "={{$json.date}}",
+            "Time": "={{$json.time}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "      Post",
+              "displayName": "      Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "   Hashtags",
+              "displayName": "   Hashtags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1056,
+        16
+      ],
+      "id": "2e7d7ed4-643d-4866-8fa4-26126e0365ca",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PDAgSdddeIGHD5Mc",
+          "name": "Google Sheets account 8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const text = $json.output.replace(/[\\u0000-\\u001F]+/g, \"\");\n\nconst data = JSON.parse(text);\n\nconst now = new Date();\n\nreturn {\n  json: {\n    title: data.title,\n    post: data.post,\n    hashtags: data.hashtags,\n    date: now.toLocaleDateString(\"en-GB\"),\n    time: now.toLocaleTimeString(\"en-US\")\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        816,
+        0
+      ],
+      "id": "82693d90-3e8c-42bf-9896-771fde4973e8",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "nisarraheela024@gmail.com",
+        "subject": "Your LinkedIn Post",
+        "emailType": "text",
+        "message": "=Title:\n{{$node[\"Code in JavaScript\"].json.title}}\n\n--------------------------------\n\n{{$node[\"Code in JavaScript\"].json.post}}\n\n--------------------------------\n\nHashtags:\n{{$node[\"Code in JavaScript\"].json.hashtags}}\n\n--------------------------------\n\nDate:\n{{$node[\"Code in JavaScript\"].json.date}}\n\nTime:\n{{$node[\"Code in JavaScript\"].json.time}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        16
+      ],
+      "id": "cc6dcf34-351e-4dd0-9a2e-d4a8919fe0ee",
+      "name": "Send a message",
+      "webhookId": "015b96fb-abef-4704-86a8-997506b06fd4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fJu7HlEW5R6gDMjB",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        304,
+        208
+      ],
+      "id": "f0131738-f842-4d4f-afdc-44b9df5c1bbc",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "536h41SNlamxQtxU",
+          "name": "Groq account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "24532bfe-b4ae-4623-810f-94296a1596c5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "46928e30b2c06286ac3a213bb45fe81fba779980400f5baa55288639b341bece"
+  },
+  "id": "ZQs7TWZnmFk-vg8X5izgg",
+  "tags": []
+}
